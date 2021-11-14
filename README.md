@@ -11,5 +11,6 @@ EDA folder houses scripts to analyze the cleaned loss cost data.
 
 Notes:
 - Will only try to consume and compile 2018 loss costs and forward, as prior to that date, the file format in excel is different and would require a different cleaning script to read and consume those tables.
+- The 2021 loss costs file changed format again, requiring more cleaning and data modeling.
 
 

@@ -128,24 +128,20 @@ lc_year_setter <- 2017
 # write a function to read each file the same way into r
 fun_readfiles <- function(filepaths) {
   # read the files, but just the cells with the loss costs in them
-  xx <- read_excel(path = filepaths, 
-                   sheet = 1, 
-                   range = "B8:N1000", 
-                   col_names = FALSE)
-  # fix the column names, prefix delete the ones we dont want
-  colnames(xx) <- c("class_code", "special_class", "industry", "del1", 
-                    "loss_cost", "del2", "del3", "del4", "min_prem", 
-                    "del5", "del6", "del7", "del8")
+  xx <- read_excel(path = filepaths, sheet = 1, 
+                   range = "B7:N1000", col_names = TRUE)
   # drop any extra rows and drop unwanted columns
-  xx <- xx %>% filter(!is.na(class_code)) %>% 
-    select(!starts_with("del"))
+  xx <- xx %>% select(1:3, COST) %>% filter(!is.na(CODE)) 
+  # fix the column names, prefix delete the ones we dont want
+  colnames(xx) <- c("class_code", "special_class", 
+                    "industry", "loss_cost")
   # adding the loss cost year
   lc_year_setter <<- lc_year_setter + 1
   xx <- xx %>% mutate(lc_effective_year = lc_year_setter)
   return(xx)}
 
 # test +++++++++++++++++++++++++++
-# fun_readfiles(payload[4, 2]) %>% View()
+# fun_readfiles(payload[5, 2]) %>% View()
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # execute the file reading purrr, and time it
@@ -194,8 +190,11 @@ df <- df %>%
   mutate(loss_cost = ifelse(loss_cost == "–", NA, loss_cost)) %>% 
   filter(!is.na(loss_cost)) %>% 
   mutate(loss_cost = round(as.numeric(loss_cost), digits = 2), 
-         min_prem = as.numeric(min_prem), 
-         special_class_ind = ifelse(is.na(special_class), FALSE, TRUE))
+         special_class_ind = ifelse(is.na(special_class), FALSE, TRUE), 
+         class_code_fct = str_pad(as.character(class_code), 4), 
+         class_code_fct = str_replace_all(class_code_fct, 
+                                          ' ', '0'), 
+         class_code_fct = as_factor(class_code_fct))
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # create and append a metadata tag
