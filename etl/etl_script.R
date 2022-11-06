@@ -5,7 +5,8 @@ metadatar <- list(script_starttime = Sys.time(),
                                     author = "corb", 
                                     proj_name = "ncwclc", 
                                     script_type = "etl", 
-                                    notepad = paste0("clean, combine, the loss cost excel files")), 
+                                    notepad = paste0("clean, combine, 
+                                                 the loss cost excel files")), 
                   seed_set = 6)
 metadatar
 # ^ ====================================
@@ -117,7 +118,7 @@ dim(payload)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# set this to 1 minus the year of the earliest LC file. This way
+# set this to the year of the earliest LC file minus 1. This way
 #   the following function can tag the file as coming from a certain 
 #   year. Not elegant I know, but it should get the job done. 
 #   Will only work as long as the files are sorted alphbetically
@@ -218,6 +219,3 @@ saveRDS(df, file = filename)
 clockout()
 
 # ^ -----
-
-
-

@@ -212,9 +212,10 @@ fun_wider_tbl <- function(df_func) {
     mutate(delta_18_19 = yr_2019 / yr_2018 - 1, 
            delta_19_20 = yr_2020 / yr_2019 - 1, 
            delta_20_21 = yr_2021 / yr_2020 - 1, 
-           delta_21_22 = yr_2022 / yr_2021 - 1) %>% 
-    mutate(type_21_22 = fun_delta_type(delta_21_22), 
-           class_code_type = fun_code_type(yr_2021, yr_2022))
+           delta_21_22 = yr_2022 / yr_2021 - 1, 
+           delta_22_23 = yr_2023 / yr_2022 - 1) %>% 
+    mutate(type_22_23 = fun_delta_type(delta_22_23), 
+           class_code_type = fun_code_type(yr_2022, yr_2023))
   return(return_me)}
 
 # write the aggregated data out
@@ -228,9 +229,9 @@ fun_wider_tbl <- function(df_func) {
 # plt aggro ------------------------------------------------------
 
 df %>% fun_wider_tbl() %>% 
-  mutate(yr_2022 = ifelse(yr_2022 > 10, 10, yr_2022)) %>%
+  mutate(yr_2023 = ifelse(yr_2023 > 10, 10, yr_2023)) %>%
   ggplot() + 
-  geom_point(aes(x = yr_2022, y = delta_21_22, 
+  geom_point(aes(x = yr_2023, y = delta_22_23, 
                  color = industry), 
              alpha = 0.5) + 
   geom_hline(aes(yintercept = 0), 
@@ -239,13 +240,13 @@ df %>% fun_wider_tbl() %>%
   facet_wrap(vars(industry), scales = 'free')
 
 df %>% fun_wider_tbl() %>% 
-  mutate(yr_2022 = ifelse(is.na(yr_2022), 0, yr_2022), 
-         yr_2021 = ifelse(is.na(yr_2021), 0, yr_2021)) %>% 
-  mutate(yr_2022 = ifelse(yr_2022 > 10, 10, yr_2022)) %>% 
-  mutate(yr_2021 = ifelse(yr_2021 > 10, 10, yr_2021)) %>%
+  mutate(yr_2023 = ifelse(is.na(yr_2023), 0, yr_2023), 
+         yr_2022 = ifelse(is.na(yr_2022), 0, yr_2022)) %>% 
+  mutate(yr_2023 = ifelse(yr_2023 > 5, 5, yr_2023)) %>% 
+  mutate(yr_2022 = ifelse(yr_2022 > 5, 5, yr_2022)) %>%
   ggplot() + 
   geom_abline(slope = 1, intercept = 0, linetype = 2) + 
-  geom_point(aes(x = yr_2021, y = yr_2022, 
+  geom_point(aes(x = yr_2022, y = yr_2023, 
                  color = industry), 
              alpha = 0.5) + 
   theme_minimal() + theme(legend.position = 'none') + 
