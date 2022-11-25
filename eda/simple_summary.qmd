@@ -1,16 +1,33 @@
 ---
 title: "ncwc_simple_summary"
-format: html
+format: html 
+toc: true 
+number-sections: true 
 editor: visual
 ---
 
 ## North Carolina Workers Comp Loss Costs
 
-Every year, the North Carolina Rating Bureau publishes the Workers Comp Loss Costs by class of business. Insurers use these loss costs to form the rates for Workers Compensation insurance policies.
+Every year, the **North Carolina Rating Bureau**^1^ publishes the Workers Comp Loss Costs by class of business. Insurers use these loss costs to form the rates for Workers Compensation insurance policies.
+
+> *1: North Carolina is a bureau state, and does not primarily use NCCI like most other states.*
+
+::: callout-note
+Note, this analysis is presented w/out warranty and was not produced by an actuary.
+:::
 
 ### Simple Trends in Loss Costs
 
-These views track the change in approved loss costs over time.
+These initial views track the change in approved loss costs over time.
+
+> "Pursuant to the provisions of Article 36, Chapter 58 of the General Statutes of North Carolina, enclosed is the filing for workers compensation insurance prospective advisory loss costs, rating values and miscellaneous values applicable to new and renewal policies becoming effective on or after April 1, 2023."
+
+Typically, in this current market cycle, the frequency of workers compensation claims is decreasing at a consistent clip, while the severity of claims is flat to only slightly increasing.  As a result, loss costs are on a long-term downward trend. This is the case in both North Carolina and in almost all states. 
+
+The frequency times the severity is the loss cost. Most class codes have a loss cost between \$1 and \$2.50 which is multiplied by every \$100 of payroll to determine the manual premium. For many white-collar office jobs, loss costs are frequently well less than 25 cents. 
+
+F-Class classes are high-hazard classes that are atypical and uncommon.
+Loss costs declined precipitously in 2019 and in 2020, but the decreases have moderated substantially since then.
 
 ```{r}
 #| echo: false
@@ -178,16 +195,18 @@ plt2
 rm(plt1, plt2, plt0)
 
 # box plot of how loss costs have mostly come down in successive years
-df %>% mutate(lc_cap = ifelse(loss_cost > 15, 15, loss_cost)) %>% 
+df %>% mutate(lc_cap = ifelse(loss_cost > 10, 10, loss_cost)) %>% 
   # filter(loss_cost < 20) %>% 
   # filter(industry != "F-Class") %>% 
   ggplot(aes(x = lc_cap, color = as.factor(lc_effective_year))) + 
   geom_boxplot(alpha = 0.25) + 
   facet_wrap(vars(industry), scales = 'free') + 
-  theme_minimal() + theme(legend.position = "bottom") + 
+  theme_minimal() + 
+  theme(legend.position = "bottom", 
+        axis.text.y = element_blank()) + 
   labs(color = "Loss Cost Effective Year", x = "Loss Cost", 
        subtitle = "Class-Level Loss Cost Distros by Industry Over Time", 
-       caption = "Capped LC @ $15")
+       caption = "Capped LC @ $10")
 
 # trend line of loss costs (mean/median) over time
 df %>% 
@@ -201,7 +220,7 @@ df %>%
   geom_line() + geom_point() + 
   geom_label(aes(label = lc_med), size = 3) + 
   facet_wrap(vars(industry), scales = "free_y") + 
-  theme_minimal() + theme(legend.position = "top") + 
+  theme_minimal() + theme(legend.position = "none") + 
   labs(y = "Median Loss Cost", x = "Loss Cost Effective Year",  
        subtitle = "Class-Level Median Loss Cost by Industry Over Time", 
        caption = "")
@@ -210,10 +229,11 @@ df %>%
 
 ```
 
+{{< pagebreak >}}
+
 ### Focusing on the most recent YoY changes
 
 These views will focus on the change in loss costs from the most recent year to the upcoming year.
-
 
 ```{r}
 #| echo: false
@@ -297,6 +317,22 @@ df %>% fun_wider_tbl() %>%
 
 # ^ -----
 
-
 ```
 
+{{< pagebreak >}}
+
+## Appendix
+
+Rendered on: 
+```{r} 
+#| output: true 
+Sys.time()
+```
+
+Reference Links:
+
+-   <https://www.ncrb.org/ncrb/workers-compensation/circulars>
+
+-   [Rate and Filings](https://www.ncrb.org/ncrb/workers-compensation/rate-filings)
+
+Packages primarily used in this analysis: `library(lobstr)  library(rlang)  library(tidyverse)  library(tidylog)  library(scales)  library(gt)  library(patchwork)`
